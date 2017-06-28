@@ -1,4 +1,4 @@
-import beginning.controler.BeginningControler;
+import beginning.controller.BeginningController;
 import beginning.vue.BeginningVue;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -14,7 +14,7 @@ public class Islander extends Application{
         int size = 800;
 
         BeginningVue scene = new BeginningVue();
-        BeginningControler controler = new BeginningControler(scene);
+        BeginningController controler = new BeginningController(scene);
         controler.setBehaviourComponent();
 
         stage.setScene(controler.getScene());
@@ -22,10 +22,6 @@ public class Islander extends Application{
         stage.setHeight(size);
         stage.setTitle("Islander");
         stage.show();
-
-
-
-
     }
 
     public static void main(String[] args) {

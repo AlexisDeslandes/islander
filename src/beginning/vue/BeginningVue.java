@@ -24,7 +24,6 @@ public class BeginningVue implements Observer {
         this.leave = new Button("Leave");
         this.param = new Button("Parameters");
         this.loadGame = new Button("Load Game");
-
         buttons = new VBox(newGame, loadGame, param, leave);
         setButtonsPref();
     }
