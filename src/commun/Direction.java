@@ -18,6 +18,8 @@ public enum Direction {
         this.y = y;
     }
 
+    //todo passer à plus de direction en comptant les NE, faire les cas dans le controler.
+
     public void makeTranslate(Point rectanglePos, int value) {
         rectanglePos.translate(value * x, value * y);
     }

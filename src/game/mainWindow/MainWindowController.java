@@ -29,11 +29,20 @@ public class MainWindowController implements Controller {
         vue.setOnKeyPressed(event -> {
             switch (event.getCode().name()) {
                 case "Q":
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.EAST));
                     clientCommunication.sendRequest(new Deplacement(Direction.WEST, 10));
                     break;
                 case "D":
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.WEST));
                     clientCommunication.sendRequest(new Deplacement(Direction.EAST, 10));
                     break;
+                case "Z":
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.SOUTH));
+                    clientCommunication.sendRequest(new Deplacement(Direction.NORTH,10));
+                    break;
+                case "S":
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.NORTH));
+                    clientCommunication.sendRequest(new Deplacement(Direction.SOUTH,10));
                 default:
                     break;
             }
@@ -45,6 +54,12 @@ public class MainWindowController implements Controller {
                     break;
                 case "D":
                     clientCommunication.sendRequest(new StopDeplacement(Direction.EAST));
+                    break;
+                case "Z":
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.NORTH));
+                    break;
+                case "S":
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.SOUTH));
                     break;
                 default:
                     break;

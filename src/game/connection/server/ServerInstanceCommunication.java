@@ -21,9 +21,7 @@ public class ServerInstanceCommunication extends Thread {
 
     private ObjectInputStream ois;
 
-    private Map<Direction,MoveThread> directionMoveThreadMap;
-
-    private MoveThread moveThread;
+    private Map<Direction, MoveThread> directionMoveThreadMap;
 
     private Socket socket;
 
@@ -36,7 +34,6 @@ public class ServerInstanceCommunication extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.moveThread = new MoveThread(oos);
     }
 
     public void instantiatedDeplacementThread(Request request) throws JSONException {
@@ -47,19 +44,13 @@ public class ServerInstanceCommunication extends Thread {
             moveThread.activate(request);
             moveThread.start();
         }
-        /*
-        if (!this.moveThread.isAlive()) {
-            this.moveThread = new MoveThread(oos);
-            this.moveThread.activate(request);
-            this.moveThread.start();
-        }
-        */
     }
 
     public void cancelDeplacementThread(Direction direction) {
-        this.directionMoveThreadMap.get(direction).disactivate();
-        this.directionMoveThreadMap.remove(direction);
-        //this.moveThread.disactivate();
+        if (this.directionMoveThreadMap.containsKey(direction)) {
+            this.directionMoveThreadMap.get(direction).disactivate();
+            this.directionMoveThreadMap.remove(direction);
+        }
     }
 
     public void run() {
