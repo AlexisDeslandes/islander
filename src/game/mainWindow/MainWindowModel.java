@@ -1,4 +1,4 @@
-package game.mainWindow.model;
+package game.mainWindow;
 
 import java.util.Observable;
 
@@ -19,7 +19,7 @@ public class MainWindowModel extends Observable {
         this.notifyObservers();
     }
 
-    public int getRectangleX() {
+    int getRectangleX() {
         return rectangleX;
     }
 }

@@ -1,15 +1,10 @@
 package beginning.vue;
 
-import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
-import java.util.Observable;
-import java.util.Observer;
-
-public class BeginningVue implements Observer {
-
-    private VBox buttons;
+public class BeginningVue extends Scene {
 
     private Button newGame;
 
@@ -19,16 +14,18 @@ public class BeginningVue implements Observer {
 
     private Button loadGame;
 
-    public BeginningVue() {
-        this.newGame = new Button("New Game");
-        this.leave = new Button("Leave");
-        this.param = new Button("Parameters");
-        this.loadGame = new Button("Load Game");
-        buttons = new VBox(newGame, loadGame, param, leave);
+    public BeginningVue(){
+        super(new VBox(new Button("New Game"),new Button("Leave"),new Button("Parameters"),new Button("Load Game")));
+        VBox buttons = (VBox) this.getRoot();
+        this.newGame = (Button) buttons.getChildren().get(0);
+        this.leave = (Button) buttons.getChildren().get(1);
+        this.param = (Button) buttons.getChildren().get(2);
+        this.loadGame = (Button) buttons.getChildren().get(3);
         setButtonsPref();
     }
 
     private void setButtonsPref() {
+        VBox buttons = (VBox) this.getRoot();
         buttons.setLayoutX(100);
         buttons.setLayoutY(100);
         buttons.setSpacing(25);
@@ -46,22 +43,6 @@ public class BeginningVue implements Observer {
 
         this.loadGame.setPrefWidth(buttons.getPrefWidth());
         this.loadGame.setPrefHeight(buttons.getMinHeight());
-    }
-
-    /**
-     * This method is called whenever the observed object is changed. An
-     * application calls an <tt>Observable</tt> object's
-     * <code>notifyObservers</code> method to have all the object's
-     * observers notified of the change.
-     *
-     * @param o   the observable object.
-     * @param arg an argument passed to the <code>notifyObservers</code>
-     */
-    @Override
-    public void update(Observable o, Object arg) {}
-
-    public Parent getContenu() {
-        return buttons;
     }
 
     public Button getNewGame() {

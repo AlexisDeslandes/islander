@@ -1,8 +1,7 @@
-package game.mainWindow.vue;
+package game.mainWindow;
 
-import game.mainWindow.model.MainWindowModel;
 import javafx.geometry.Insets;
-import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -16,20 +15,18 @@ import java.util.Observer;
 /**
  * Created by Desla on 27/06/2017.
  */
-public class MainWindowVue implements Observer {
+public class MainWindowVue extends Scene implements Observer {
 
     private Label something;
 
     public MainWindowVue(){
-        this.something = new Label("Un label");
-    }
-
-    public Parent getContenu() {
-        AnchorPane pane = new AnchorPane(something);
+        super(new AnchorPane());
+        AnchorPane pane = (AnchorPane) this.getRoot();
         pane.setMinWidth(800);
         pane.setMinHeight(700);
         pane.setBackground(new Background(new BackgroundFill(Color.web("#FD6C9E"), CornerRadii.EMPTY, Insets.EMPTY)));
-        return pane;
+        this.something = new Label("This is a revolution");
+        pane.getChildren().add(something);
     }
 
     /**

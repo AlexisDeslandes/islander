@@ -1,6 +1,7 @@
 import beginning.controller.BeginningController;
 import beginning.vue.BeginningVue;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
@@ -17,6 +18,12 @@ public class Islander extends Application{
         BeginningController controler = new BeginningController(scene);
         controler.setBehaviourComponent();
 
+        Platform.setImplicitExit(true);
+        stage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
         stage.setScene(controler.getScene());
         stage.setWidth(size);
         stage.setHeight(size);
@@ -27,5 +34,6 @@ public class Islander extends Application{
     public static void main(String[] args) {
         Application.launch(args);
     }
+
 
 }
