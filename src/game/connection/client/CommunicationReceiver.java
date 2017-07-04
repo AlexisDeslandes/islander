@@ -1,5 +1,6 @@
 package game.connection.client;
 
+import game.connection.request.Request;
 import game.mainWindow.MainWindowModel;
 
 import java.io.IOException;
@@ -22,8 +23,8 @@ class CommunicationReceiver extends Thread {
     public void run() {
         while (true) {
             try {
-                Integer i = (Integer) ois.readObject();
-                model.incrX(i);
+                Request request = (Request) ois.readObject();
+                request.actionOnClient(model);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

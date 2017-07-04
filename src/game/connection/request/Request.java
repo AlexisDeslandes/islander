@@ -1,6 +1,7 @@
 package game.connection.request;
 
 import game.connection.server.ServerInstanceCommunication;
+import game.mainWindow.MainWindowModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,4 +15,6 @@ public interface Request extends Serializable {
     JSONObject getJSON() throws JSONException;
 
     void actionOnServer(ServerInstanceCommunication serverInstanceCommunication) throws JSONException;
+
+    void actionOnClient(MainWindowModel model);
 }

@@ -40,15 +40,26 @@ public class ServerInstanceCommunication extends Thread {
     }
 
     public void instantiatedDeplacementThread(Request request) throws JSONException {
+        Direction direction = (Direction) request.getJSON().get("direction");
+        if (!directionMoveThreadMap.containsKey(direction)) {
+            MoveThread moveThread = new MoveThread(oos);
+            directionMoveThreadMap.put(direction, moveThread);
+            moveThread.activate(request);
+            moveThread.start();
+        }
+        /*
         if (!this.moveThread.isAlive()) {
             this.moveThread = new MoveThread(oos);
             this.moveThread.activate(request);
             this.moveThread.start();
         }
+        */
     }
 
-    public void cancelDeplacementThread() {
-        this.moveThread.disactivate();
+    public void cancelDeplacementThread(Direction direction) {
+        this.directionMoveThreadMap.get(direction).disactivate();
+        this.directionMoveThreadMap.remove(direction);
+        //this.moveThread.disactivate();
     }
 
     public void run() {

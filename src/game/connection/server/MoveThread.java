@@ -1,7 +1,6 @@
 package game.connection.server;
 
 import game.connection.request.Request;
-import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -26,9 +25,9 @@ class MoveThread extends Thread {
     public void run() {
         while (running){
             try {
-                oos.writeObject(request.getJSON().get("deplacement"));
+                oos.writeObject(request);
                 Thread.sleep(20);
-            } catch (IOException | JSONException | InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         }

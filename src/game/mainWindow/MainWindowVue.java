@@ -42,6 +42,7 @@ public class MainWindowVue extends Scene implements Observer {
     public void update(Observable o, Object arg) {
         if (o instanceof MainWindowModel){
             something.setLayoutX(((MainWindowModel) o).getRectangleX());
+            something.setLayoutY(((MainWindowModel) o).getRectangleY());
         }
     }
 }

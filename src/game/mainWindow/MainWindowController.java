@@ -1,6 +1,7 @@
 package game.mainWindow;
 
 import commun.Controller;
+import commun.Direction;
 import game.connection.client.ClientCommunication;
 import game.connection.request.Deplacement;
 import game.connection.request.StopDeplacement;
@@ -28,10 +29,10 @@ public class MainWindowController implements Controller {
         vue.setOnKeyPressed(event -> {
             switch (event.getCode().name()) {
                 case "Q":
-                    clientCommunication.sendRequest(new Deplacement(-10));
+                    clientCommunication.sendRequest(new Deplacement(Direction.WEST, 10));
                     break;
                 case "D":
-                    clientCommunication.sendRequest(new Deplacement(10));
+                    clientCommunication.sendRequest(new Deplacement(Direction.EAST, 10));
                     break;
                 default:
                     break;
@@ -40,10 +41,10 @@ public class MainWindowController implements Controller {
         vue.setOnKeyReleased(event -> {
             switch (event.getCode().name()) {
                 case "Q":
-                    clientCommunication.sendRequest(new StopDeplacement());
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.WEST));
                     break;
                 case "D":
-                    clientCommunication.sendRequest(new StopDeplacement());
+                    clientCommunication.sendRequest(new StopDeplacement(Direction.EAST));
                     break;
                 default:
                     break;

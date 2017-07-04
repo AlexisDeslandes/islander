@@ -1,5 +1,8 @@
 package game.mainWindow;
 
+import commun.Direction;
+
+import java.awt.*;
 import java.util.Observable;
 
 /**
@@ -7,19 +10,23 @@ import java.util.Observable;
  */
 public class MainWindowModel extends Observable {
 
-    private int rectangleX;
+    private Point rectanglePos;
 
     public MainWindowModel() {
-        this.rectangleX = 0;
+        this.rectanglePos = new Point(0, 0);
     }
 
-    public void incrX(int x) {
-        this.rectangleX += x;
+    public void move(Direction direction, int value) {
+        direction.makeTranslate(rectanglePos, value);
         this.setChanged();
         this.notifyObservers();
     }
 
     int getRectangleX() {
-        return rectangleX;
+        return rectanglePos.x;
+    }
+
+    int getRectangleY() {
+        return rectanglePos.y;
     }
 }
