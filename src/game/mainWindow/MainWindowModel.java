@@ -1,6 +1,6 @@
 package game.mainWindow;
 
-import commun.Direction;
+import commun.Compas;
 
 import java.awt.*;
 import java.util.Observable;
@@ -16,8 +16,8 @@ public class MainWindowModel extends Observable {
         this.rectanglePos = new Point(0, 0);
     }
 
-    public void move(Direction direction, int value) {
-        direction.makeTranslate(rectanglePos, value);
+    public void move(Compas compas, int value) {
+        compas.makeTranslate(rectanglePos, value);
         this.setChanged();
         this.notifyObservers();
     }

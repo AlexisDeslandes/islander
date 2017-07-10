@@ -28,7 +28,6 @@ public class BeginningController implements Controller {
             MainWindowModel model = new MainWindowModel();
             ClientCommunication clientCommunication = new ClientCommunication(model);
             MainWindowController controller = new MainWindowController(model, new MainWindowVue(), clientCommunication);
-            controller.setBehaviourKeyBoard();
             controller.setBehaviourMouse();
             controller.setBehaviourScreenElement();
 

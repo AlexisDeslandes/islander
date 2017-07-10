@@ -1,6 +1,7 @@
-package game.connection.request;
+package game.connection.request.move;
 
-import commun.Direction;
+import commun.Compas;
+import game.connection.request.Request;
 import game.connection.server.ServerInstanceCommunication;
 import game.mainWindow.MainWindowModel;
 import org.json.JSONException;
@@ -9,33 +10,32 @@ import org.json.JSONObject;
 /**
  * Created by Desla on 28/06/2017.
  */
-public class Deplacement implements Request {
+public abstract class Movement implements Request {
 
     private int value;
 
-    private Direction direction;
-
-    public Deplacement(Direction direction, int value) {
-        this.value = value;
-        this.direction = direction;
+    public Movement() {
+        this.value = 10;
     }
 
     @Override
     public JSONObject getJSON() throws JSONException {
         JSONObject object = new JSONObject();
-        object.put("direction", direction);
+        object.put("direction", getCompas());
         object.put("deplacement", value);
         return object;
     }
 
+    abstract Compas getCompas();
+
     @Override
     public void actionOnServer(ServerInstanceCommunication serverInstanceCommunication) throws JSONException {
-        serverInstanceCommunication.instantiatedDeplacementThread(this);
+        serverInstanceCommunication.modifyMovementThread(this);
     }
 
     @Override
     public void actionOnClient(MainWindowModel model) {
-        model.move(direction, value);
+        model.move(getCompas(), value);
     }
 
 }

@@ -13,7 +13,6 @@ public class Islander extends Application{
     @Override
     public void start(Stage stage){
         int size = 800;
-
         BeginningVue scene = new BeginningVue();
         BeginningController controler = new BeginningController(scene);
         controler.setBehaviourComponent();

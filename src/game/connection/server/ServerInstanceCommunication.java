@@ -1,6 +1,6 @@
 package game.connection.server;
 
-import commun.Direction;
+import commun.Compas;
 import game.connection.request.Request;
 import org.json.JSONException;
 
@@ -9,8 +9,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Desla on 28/06/2017.
@@ -21,35 +19,35 @@ public class ServerInstanceCommunication extends Thread {
 
     private ObjectInputStream ois;
 
-    private Map<Direction, MoveThread> directionMoveThreadMap;
+    private Compas currentCompas;
 
     private Socket socket;
 
+    private MoveThread moveThread;
+
     ServerInstanceCommunication(Socket socket) {
         this.socket = socket;
-        this.directionMoveThreadMap = new HashMap<>();
+        this.currentCompas = Compas.NOTHING;
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.moveThread = new MoveThread(oos);
     }
 
-    public void instantiatedDeplacementThread(Request request) throws JSONException {
-        Direction direction = (Direction) request.getJSON().get("direction");
-        if (!directionMoveThreadMap.containsKey(direction)) {
-            MoveThread moveThread = new MoveThread(oos);
-            directionMoveThreadMap.put(direction, moveThread);
+    public void modifyMovementThread(Request request) throws JSONException {
+        Compas direction = (Compas) request.getJSON().get("direction");
+        if (!direction.equals(currentCompas) && !direction.equals(Compas.NOTHING)) {
+            this.moveThread.disactivate();
+            this.currentCompas = direction;
+            moveThread = new MoveThread(oos);
             moveThread.activate(request);
             moveThread.start();
         }
-    }
-
-    public void cancelDeplacementThread(Direction direction) {
-        if (this.directionMoveThreadMap.containsKey(direction)) {
-            this.directionMoveThreadMap.get(direction).disactivate();
-            this.directionMoveThreadMap.remove(direction);
+        if (direction.equals(Compas.NOTHING)){
+            this.moveThread.disactivate();
         }
     }
 
