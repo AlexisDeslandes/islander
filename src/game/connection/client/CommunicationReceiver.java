@@ -1,7 +1,7 @@
 package game.connection.client;
 
 import game.connection.request.Request;
-import game.mainWindow.MainWindowModel;
+import game.mainWindow.model.MainWindowModel;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

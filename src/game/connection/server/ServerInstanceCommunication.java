@@ -2,6 +2,10 @@ package game.connection.server;
 
 import commun.Compas;
 import game.connection.request.Request;
+import game.connection.request.move.Movement;
+import game.connection.request.player.GetGameState;
+import game.connection.request.player.GetIDPlayer;
+import game.connection.request.player.InformNewPlayer;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -9,6 +13,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Desla on 28/06/2017.
@@ -19,36 +25,49 @@ public class ServerInstanceCommunication extends Thread {
 
     private ObjectInputStream ois;
 
-    private Compas currentCompas;
+    private static Map<Integer, Compas> currentCompasMap = new HashMap<>();
 
     private Socket socket;
 
-    private MoveThread moveThread;
+    private static Map<MoveThreadIdentifier, MoveThread> moveThreadMap = new HashMap<>();
+
+    private int id;
 
     ServerInstanceCommunication(Socket socket) {
         this.socket = socket;
-        this.currentCompas = Compas.NOTHING;
+        int sizeServers = ServerCommunication.serverInstanceCommunicationList.size() + 1;
+        currentCompasMap.put(sizeServers, Compas.NOTHING);
         try {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.moveThread = new MoveThread(oos);
+        for (int i = 1; i < sizeServers + 1; i++) {
+            moveThreadMap.put(new MoveThreadIdentifier(sizeServers, i), new MoveThread());
+        }
+        for (int i = 1; i < sizeServers; i++) {
+            moveThreadMap.put(new MoveThreadIdentifier(i, sizeServers), new MoveThread());
+        }
     }
 
-    public void modifyMovementThread(Request request) throws JSONException {
+    public void modifyMovementThread(Movement request) throws JSONException {
         Compas direction = (Compas) request.getJSON().get("direction");
-        if (!direction.equals(currentCompas) && !direction.equals(Compas.NOTHING)) {
-            this.moveThread.disactivate();
-            this.currentCompas = direction;
-            moveThread = new MoveThread(oos);
-            moveThread.activate(request);
-            moveThread.start();
-        }
-        if (direction.equals(Compas.NOTHING)){
-            this.moveThread.disactivate();
-        }
+        int id = request.getID();
+        moveThreadMap.entrySet().stream().filter(
+                entrySet -> entrySet.getKey().getIdPlayerMoving() == id).forEach(
+                moveThreadIdentifierMoveThreadEntry -> {
+                    if (!direction.equals(currentCompasMap.get(id)) && !direction.equals(Compas.NOTHING)) {
+                        moveThreadIdentifierMoveThreadEntry.getValue().disactivate();
+                        moveThreadMap.put(moveThreadIdentifierMoveThreadEntry.getKey(), new MoveThread());
+                        moveThreadMap.get(moveThreadIdentifierMoveThreadEntry.getKey()).activate(request);
+                    }
+                    if (direction.equals(Compas.NOTHING)) {
+                        moveThreadIdentifierMoveThreadEntry.getValue().disactivate();
+                    }
+                }
+        );
+        currentCompasMap.put(id, direction);
     }
 
     public void run() {
@@ -56,13 +75,15 @@ public class ServerInstanceCommunication extends Thread {
             try {
                 Request request = (Request) ois.readObject();
                 System.out.println("Requête de " + socket.getInetAddress().getHostAddress() + " : " + request.getJSON());
+                request.actionOnServer(this);
                 ServerCommunication.serverInstanceCommunicationList.forEach(communication -> {
                     try {
-                        request.actionOnServer(communication);
+                        request.actionOnServers(communication);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 });
+                request.actionEndingServers();
             } catch (SocketException e) {
                 System.out.println("Connection perdue avec " + socket.getInetAddress().getHostAddress());
                 ServerCommunication.serverInstanceCommunicationList.remove(this);
@@ -73,4 +94,46 @@ public class ServerInstanceCommunication extends Thread {
         }
     }
 
+
+    public void attributeID(GetIDPlayer getIDPlayer) {
+        try {
+            int id = ServerCommunication.serverInstanceCommunicationList.size();
+            this.id = id;
+            getIDPlayer.setIdPlayer(id);
+            oos.writeObject(getIDPlayer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void informNewPlayer(GetIDPlayer getIDPlayer) {
+        try {
+            oos.writeObject(new InformNewPlayer(getIDPlayer.getIdPlayer()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Map<MoveThreadIdentifier, MoveThread> getMoveThreadMap() {
+        return moveThreadMap;
+    }
+
+    public void askGameState(GetGameState getGameState) {
+        int nbPlayer = ServerCommunication.serverInstanceCommunicationList.size();
+        getGameState.setNbPlayer(nbPlayer);
+        try {
+            oos.writeObject(getGameState);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ObjectOutputStream getOos() {
+        return oos;
+    }
+
+
+    public int getID() {
+        return id;
+    }
 }

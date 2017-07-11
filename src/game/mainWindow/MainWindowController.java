@@ -3,6 +3,7 @@ package game.mainWindow;
 import commun.Controller;
 import game.connection.client.ClientCommunication;
 import game.mainWindow.keyGestion.KeyManager;
+import game.mainWindow.model.MainWindowModel;
 import javafx.scene.Scene;
 
 /**
@@ -23,7 +24,7 @@ public class MainWindowController implements Controller {
         this.vue = vue;
         this.clientCommunication = clientCommunication;
         this.model.addObserver(vue);
-        this.keyManager = new KeyManager(clientCommunication,vue);
+        this.keyManager = new KeyManager(clientCommunication,vue,model.getPlayerId());
     }
 
 

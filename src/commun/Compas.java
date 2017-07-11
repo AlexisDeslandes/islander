@@ -77,7 +77,9 @@ public enum Compas {
         rectanglePos.translate(value * x, value * y);
     }
 
-    public Request getRequest(){
-        return this.request;
+    public Request getRequest(int id){
+        Movement movement = (Movement) this.request;
+        movement.setId(id);
+        return movement;
     }
 }

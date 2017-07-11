@@ -8,6 +8,7 @@ import commun.Compas;
 public class NorthWestMovement extends Movement {
 
 
+
     @Override
     Compas getCompas() {
         return Compas.NW;

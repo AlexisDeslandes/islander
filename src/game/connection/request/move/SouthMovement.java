@@ -7,6 +7,7 @@ import commun.Compas;
  */
 public class SouthMovement extends Movement{
 
+
     @Override
     Compas getCompas() {
         return Compas.S;

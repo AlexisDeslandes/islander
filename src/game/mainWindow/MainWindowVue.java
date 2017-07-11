@@ -1,5 +1,6 @@
 package game.mainWindow;
 
+import game.mainWindow.model.MainWindowModel;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -17,7 +18,7 @@ import java.util.Observer;
  */
 public class MainWindowVue extends Scene implements Observer {
 
-    private Label something;
+    private Label something, elsething;
 
     public MainWindowVue(){
         super(new AnchorPane());
@@ -26,7 +27,9 @@ public class MainWindowVue extends Scene implements Observer {
         pane.setMinHeight(700);
         pane.setBackground(new Background(new BackgroundFill(Color.web("#FD6C9E"), CornerRadii.EMPTY, Insets.EMPTY)));
         this.something = new Label("This is a revolution");
+        this.elsething = new Label("second revolution");
         pane.getChildren().add(something);
+        pane.getChildren().add(elsething);
     }
 
     /**
@@ -43,6 +46,8 @@ public class MainWindowVue extends Scene implements Observer {
         if (o instanceof MainWindowModel){
             something.setLayoutX(((MainWindowModel) o).getRectangleX());
             something.setLayoutY(((MainWindowModel) o).getRectangleY());
+            elsething.setLayoutX(((MainWindowModel) o).getRec());
+            elsething.setLayoutY(((MainWindowModel) o).getRecY());
         }
     }
 }

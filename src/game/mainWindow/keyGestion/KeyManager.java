@@ -13,7 +13,10 @@ public class KeyManager {
 
     private ClientCommunication clientCommunication;
 
-    public KeyManager(ClientCommunication clientCommunication, MainWindowVue vue) {
+    private int playerID;
+
+    public KeyManager(ClientCommunication clientCommunication, MainWindowVue vue, int playerID) {
+        this.playerID = playerID;
         this.clientCommunication = clientCommunication;
         this.compas = Compas.NOTHING;
         this.setBehaviourKeyBoard(vue);
@@ -37,7 +40,7 @@ public class KeyManager {
                 default:
                     break;
             }
-            if (!precedentCompas.equals(compas)) clientCommunication.sendRequest(compas.getRequest());
+            if (!precedentCompas.equals(compas)) clientCommunication.sendRequest(compas.getRequest(playerID));
         });
         vue.setOnKeyReleased(event -> {
             switch (event.getCode()) {
@@ -56,7 +59,7 @@ public class KeyManager {
                 default:
                     break;
             }
-            clientCommunication.sendRequest(compas.getRequest());
+            clientCommunication.sendRequest(compas.getRequest(playerID));
         });
     }
 

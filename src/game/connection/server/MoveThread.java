@@ -8,17 +8,19 @@ import java.io.ObjectOutputStream;
 /**
  * Created by Desla on 03/07/2017.
  */
-class MoveThread extends Thread {
+public class MoveThread extends Thread {
 
     private boolean running;
 
     private ObjectOutputStream oos;
 
+    private boolean readyToStart;
+
     private Request request;
 
-    MoveThread(ObjectOutputStream oos){
+    MoveThread(){
+        this.readyToStart = false;
         this.running = false;
-        this.oos = oos;
     }
 
     @Override
@@ -36,6 +38,7 @@ class MoveThread extends Thread {
     void activate(Request request){
         this.request = request;
         this.running = true;
+        this.readyToStart = true;
     }
 
     void disactivate(){
@@ -43,4 +46,15 @@ class MoveThread extends Thread {
         this.request = null;
     }
 
+    public boolean readyToStart(){
+        return readyToStart;
+    }
+
+    public void setReadyToStart(boolean readyToStart) {
+        this.readyToStart = readyToStart;
+    }
+
+    public void setOos(ObjectOutputStream oos) {
+        this.oos = oos;
+    }
 }
