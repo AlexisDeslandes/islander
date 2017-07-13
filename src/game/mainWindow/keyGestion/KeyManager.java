@@ -15,6 +15,8 @@ public class KeyManager {
 
     private int playerID;
 
+    private static boolean allowModification = false;
+
     public KeyManager(ClientCommunication clientCommunication, MainWindowVue vue, int playerID) {
         this.playerID = playerID;
         this.clientCommunication = clientCommunication;
@@ -24,43 +26,52 @@ public class KeyManager {
 
     private void setBehaviourKeyBoard(MainWindowVue vue) {
         vue.setOnKeyPressed(event -> {
-            Compas precedentCompas = this.compas;
-            switch (event.getCode()) {
-                case Q:
-                    this.compas = compas.goToWest();
-                    break;
-                case D:
-                    this.compas = compas.goToEast();
-                    break;
-                case Z:
-                    this.compas = compas.goToNorth();
-                    break;
-                case S:
-                    this.compas = compas.goToSouth();
-                default:
-                    break;
+            if (allowModification) {
+                Compas precedentCompas = this.compas;
+                switch (event.getCode()) {
+                    case Q:
+                        this.compas = compas.goToWest();
+                        break;
+                    case D:
+                        this.compas = compas.goToEast();
+                        break;
+                    case Z:
+                        this.compas = compas.goToNorth();
+                        break;
+                    case S:
+                        this.compas = compas.goToSouth();
+                    default:
+                        break;
+                }
+                if (!precedentCompas.equals(compas)) clientCommunication.sendRequest(compas.getRequest(playerID));
             }
-            if (!precedentCompas.equals(compas)) clientCommunication.sendRequest(compas.getRequest(playerID));
         });
         vue.setOnKeyReleased(event -> {
-            switch (event.getCode()) {
-                case Q:
-                    this.compas = compas.cancelWest();
-                    break;
-                case D:
-                    this.compas = compas.cancelEast();
-                    break;
-                case Z:
-                    this.compas = compas.cancelNorth();
-                    break;
-                case S:
-                    this.compas = compas.cancelSouth();
-                    break;
-                default:
-                    break;
+            if (allowModification) {
+                switch (event.getCode()) {
+                    case Q:
+                        this.compas = compas.cancelWest();
+                        break;
+                    case D:
+                        this.compas = compas.cancelEast();
+                        break;
+                    case Z:
+                        this.compas = compas.cancelNorth();
+                        break;
+                    case S:
+                        this.compas = compas.cancelSouth();
+                        break;
+                    default:
+                        break;
+                }
+                clientCommunication.sendRequest(compas.getRequest(playerID));
             }
-            clientCommunication.sendRequest(compas.getRequest(playerID));
         });
+
+    }
+
+    public static void setAllowModification(boolean allowModification) {
+        KeyManager.allowModification = allowModification;
     }
 
 }

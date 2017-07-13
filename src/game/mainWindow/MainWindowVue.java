@@ -1,6 +1,8 @@
 package game.mainWindow;
 
-import game.mainWindow.model.MainWindowModel;
+import game.mainWindow.model.Player;
+import game.mainWindow.model.PositionIdentified;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -10,26 +12,29 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 /**
  * Created by Desla on 27/06/2017.
  */
 public class MainWindowVue extends Scene implements Observer {
 
-    private Label something, elsething;
+    private Map<Integer, Label> characters;
 
-    public MainWindowVue(){
+    private AnchorPane root;
+
+    MainWindowVue() {
         super(new AnchorPane());
+        this.characters = new HashMap<>();
         AnchorPane pane = (AnchorPane) this.getRoot();
+        this.root = pane;
         pane.setMinWidth(800);
-        pane.setMinHeight(700);
-        pane.setBackground(new Background(new BackgroundFill(Color.web("#FD6C9E"), CornerRadii.EMPTY, Insets.EMPTY)));
-        this.something = new Label("This is a revolution");
-        this.elsething = new Label("second revolution");
-        pane.getChildren().add(something);
-        pane.getChildren().add(elsething);
+        pane.setMinHeight(800);
+        pane.setBackground(new Background(new BackgroundFill(Color.web("#FFFFFF"), CornerRadii.EMPTY, Insets.EMPTY)));
+        Label waitingMessage = new Label("Waiting for another player ...");
+        waitingMessage.setLayoutX(400);
+        waitingMessage.setLayoutY(400);
+        pane.getChildren().add(waitingMessage);
     }
 
     /**
@@ -43,11 +48,26 @@ public class MainWindowVue extends Scene implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof MainWindowModel){
-            something.setLayoutX(((MainWindowModel) o).getRectangleX());
-            something.setLayoutY(((MainWindowModel) o).getRectangleY());
-            elsething.setLayoutX(((MainWindowModel) o).getRec());
-            elsething.setLayoutY(((MainWindowModel) o).getRecY());
+
+        if (arg instanceof PositionIdentified) {
+            PositionIdentified positionIdentified = (PositionIdentified) arg;
+            root.getChildren().get(positionIdentified.getId() - 1).setLayoutX(positionIdentified.getPosition().getX());
+            root.getChildren().get(positionIdentified.getId() - 1).setLayoutY(positionIdentified.getPosition().getY());
         }
+        if (arg instanceof Map) {
+            Platform.runLater(() -> {
+                root.getChildren().clear();
+                Map<Integer, Player> map = (Map<Integer, Player>) arg;
+                map.keySet().forEach(
+                        integer -> {
+                            Label label = new Label("" + integer);
+                            characters.put(integer, label);
+                            root.getChildren().add(label);
+                        }
+                );
+            });
+
+        }
+
     }
 }

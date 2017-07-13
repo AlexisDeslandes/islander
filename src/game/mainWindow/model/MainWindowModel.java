@@ -1,6 +1,7 @@
 package game.mainWindow.model;
 
 import commun.Compas;
+import game.mainWindow.keyGestion.KeyManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,23 +23,7 @@ public class MainWindowModel extends Observable {
     public void move(int id, Compas compas, int value) {
         compas.makeTranslate(playerMap.get(id).getPosition(), value);
         this.setChanged();
-        this.notifyObservers();
-    }
-
-    public int getRectangleX() {
-        return playerMap.get(1).getPosition().x;
-    }
-
-    public int getRectangleY() {
-        return playerMap.get(1).getPosition().y;
-    }
-
-    public int getRec() {
-        return playerMap.get(2).getPosition().x;
-    }
-
-    public int getRecY() {
-        return playerMap.get(2).getPosition().y;
+        this.notifyObservers(new PositionIdentified(id, playerMap.get(id).getPosition()));
     }
 
     public void setPlayerID(int playerID) {
@@ -47,6 +32,9 @@ public class MainWindowModel extends Observable {
 
     public void addPlayer(int id, Player player) {
         playerMap.put(id, player);
+        if (playerMap.size() == 2) {
+            launchGame();
+        }
     }
 
     public int getPlayerId() {
@@ -56,7 +44,18 @@ public class MainWindowModel extends Observable {
     public void addPlayers(int nbPlayer) {
         int players = nbPlayer - 1;
         for (int i = 0; i < players; i++) {
-            playerMap.put(i+1,new Player());
+            int x = i + 1;
+            playerMap.put(x, new Player());
+        }
+        if (playerMap.size() == 2) {
+            launchGame();
         }
     }
+
+    private void launchGame() {
+        this.setChanged();
+        this.notifyObservers(playerMap);
+        KeyManager.setAllowModification(true);
+    }
+
 }

@@ -13,7 +13,8 @@ public class Player {
         this.position = new Point();
     }
 
-    public Point getPosition() {
+    Point getPosition() {
         return position;
     }
+
 }

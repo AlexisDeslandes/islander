@@ -59,7 +59,7 @@ public abstract class Movement implements Request {
 
     @Override
     public void actionEndingServers() {
-        //ServerInstanceCommunication.getMoveThreadMap().values().forEach(moveThread -> moveThread.setReadyToStart(false));
+        //nothing to do.
     }
 
     public void setId(int id) {
