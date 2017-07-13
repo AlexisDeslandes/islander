@@ -1,7 +1,7 @@
 package game.mainWindow;
 
+import game.mainWindow.model.Arrow;
 import game.mainWindow.model.Player;
-import game.mainWindow.model.PositionIdentified;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -11,21 +11,28 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * Created by Desla on 27/06/2017.
  */
 public class MainWindowVue extends Scene implements Observer {
 
-    private Map<Integer, Label> characters;
+    private Map<Integer, Rectangle> characters;
+
+    private Map<Integer, Rectangle> arrowMap;
 
     private AnchorPane root;
 
     MainWindowVue() {
         super(new AnchorPane());
         this.characters = new HashMap<>();
+        this.arrowMap = new HashMap<>();
         AnchorPane pane = (AnchorPane) this.getRoot();
         this.root = pane;
         pane.setMinWidth(800);
@@ -48,26 +55,46 @@ public class MainWindowVue extends Scene implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
-
-        if (arg instanceof PositionIdentified) {
-            PositionIdentified positionIdentified = (PositionIdentified) arg;
-            root.getChildren().get(positionIdentified.getId() - 1).setLayoutX(positionIdentified.getPosition().getX());
-            root.getChildren().get(positionIdentified.getId() - 1).setLayoutY(positionIdentified.getPosition().getY());
+        if (arg instanceof Player) {
+            Player player = (Player) arg;
+            moveCharacter(player);
         }
         if (arg instanceof Map) {
-            Platform.runLater(() -> {
-                root.getChildren().clear();
-                Map<Integer, Player> map = (Map<Integer, Player>) arg;
-                map.keySet().forEach(
-                        integer -> {
-                            Label label = new Label("" + integer);
-                            characters.put(integer, label);
-                            root.getChildren().add(label);
-                        }
-                );
-            });
-
+            Map<Integer, Player> integerPlayerMap = (Map<Integer, Player>) arg;
+            addPlayerInScene(integerPlayerMap);
         }
 
+        if (arg instanceof Arrow) {
+            Arrow arrow = (Arrow) arg;
+            addArrow(arrow);
+        }
+    }
+
+    private void addArrow(Arrow arrow) {
+        Platform.runLater(() -> {
+            Rectangle rectangle = new Rectangle(10, 10, Color.AQUA);
+            rectangle.setLayoutX(arrow.getPosition().getX());
+            rectangle.setLayoutY(arrow.getPosition().getY());
+            this.root.getChildren().add(rectangle);
+        });
+    }
+
+    private void addPlayerInScene(Map<Integer, Player> integerPlayerMap) {
+        Platform.runLater(() -> {
+            root.getChildren().clear();
+            integerPlayerMap.keySet().forEach(
+                    integer -> {
+                        Rectangle rectangle = new Rectangle(50, 50);
+                        characters.put(integer, rectangle);
+                        root.getChildren().add(rectangle);
+                    }
+            );
+        });
+    }
+
+    private void moveCharacter(Player newModificationPlayer) {
+        Rectangle toChange = characters.get(newModificationPlayer.getId());
+        toChange.setLayoutX(newModificationPlayer.getX());
+        toChange.setLayoutY(newModificationPlayer.getY());
     }
 }

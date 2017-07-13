@@ -9,12 +9,26 @@ public class Player {
 
     private Point position;
 
-    public Player(){
+    private int id;
+
+    public Player(int id){
         this.position = new Point();
+        this.id = id;
     }
 
-    Point getPosition() {
+    public Point getPosition() {
         return position;
     }
 
+    public double getX(){
+        return position.getX();
+    }
+
+    public double getY(){
+        return position.getY();
+    }
+
+    public int getId() {
+        return id;
+    }
 }

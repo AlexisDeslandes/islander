@@ -6,6 +6,7 @@ import game.connection.request.move.Movement;
 import game.connection.request.player.GetGameState;
 import game.connection.request.player.GetIDPlayer;
 import game.connection.request.player.InformNewPlayer;
+import game.connection.request.player.SendArrowRequest;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -21,17 +22,19 @@ import java.util.Map;
  */
 public class ServerInstanceCommunication extends Thread {
 
+    private int id;
+
     private ObjectOutputStream oos;
 
     private ObjectInputStream ois;
 
-    private static Map<Integer, Compas> currentCompasMap = new HashMap<>();
-
     private Socket socket;
+
+    private static Map<Integer, Compas> currentCompasMap = new HashMap<>();
 
     private static Map<MoveThreadIdentifier, MoveThread> moveThreadMap = new HashMap<>();
 
-    private int id;
+    private static Map<Integer,ArrowThread> integerArrowThreadMap = new HashMap<>();
 
     ServerInstanceCommunication(Socket socket) {
         this.socket = socket;
@@ -135,5 +138,16 @@ public class ServerInstanceCommunication extends Thread {
 
     public int getID() {
         return id;
+    }
+
+    public void sendArrow(SendArrowRequest sendArrowRequest) {
+        try {
+            integerArrowThreadMap.put(id,new ArrowThread());
+            oos.writeObject(sendArrowRequest);
+            //Thread.sleep(50);   //see if it is necessary
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

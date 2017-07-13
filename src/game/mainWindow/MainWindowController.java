@@ -4,8 +4,9 @@ import commun.Controller;
 import game.connection.client.ClientCommunication;
 import game.connection.request.player.GetGameState;
 import game.connection.request.player.GetIDPlayer;
-import game.mainWindow.keyGestion.KeyManager;
+import game.mainWindow.periphericGestion.KeyManager;
 import game.mainWindow.model.MainWindowModel;
+import game.mainWindow.periphericGestion.MouseManager;
 import javafx.scene.Scene;
 
 /**
@@ -28,16 +29,9 @@ public class MainWindowController implements Controller {
             e.printStackTrace();
         }
         new KeyManager(clientCommunication, vue, model.getPlayerId());
+        new MouseManager(clientCommunication, vue, model);
     }
 
-
-    public void setBehaviourMouse() {
-
-    }
-
-    public void setBehaviourScreenElement() {
-
-    }
 
     @Override
     public Scene getScene() {

@@ -22,8 +22,6 @@ public class BeginningController implements Controller {
         vue.getLeave().setOnMouseClicked(event -> ((Stage) vue.getWindow()).close());
         vue.getNewGame().setOnMouseClicked(event -> {
             MainWindowController controller = new MainWindowController();
-            controller.setBehaviourMouse();
-            controller.setBehaviourScreenElement();
             ((Stage) vue.getWindow()).setScene(controller.getScene());
         });
         vue.getLoadGame().setOnMouseClicked(event -> {

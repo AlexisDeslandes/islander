@@ -1,4 +1,4 @@
-package game.mainWindow.keyGestion;
+package game.mainWindow.periphericGestion;
 
 import commun.Compas;
 import game.connection.client.ClientCommunication;

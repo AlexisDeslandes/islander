@@ -1,7 +1,8 @@
 package game.mainWindow.model;
 
 import commun.Compas;
-import game.mainWindow.keyGestion.KeyManager;
+import game.connection.request.player.SendArrowRequest;
+import game.mainWindow.periphericGestion.KeyManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,16 +15,20 @@ public class MainWindowModel extends Observable {
 
     private Map<Integer, Player> playerMap;
 
+    private Map<Integer,Arrow> integerArrowMap;
+
     private int playerID;
 
     public MainWindowModel() {
         this.playerMap = new HashMap<>();
+        this.integerArrowMap = new HashMap<>();
     }
 
     public void move(int id, Compas compas, int value) {
-        compas.makeTranslate(playerMap.get(id).getPosition(), value);
+        Player player = playerMap.get(id);
+        compas.makeTranslate(player.getPosition(), value);
         this.setChanged();
-        this.notifyObservers(new PositionIdentified(id, playerMap.get(id).getPosition()));
+        this.notifyObservers(player);
     }
 
     public void setPlayerID(int playerID) {
@@ -44,12 +49,16 @@ public class MainWindowModel extends Observable {
     public void addPlayers(int nbPlayer) {
         int players = nbPlayer - 1;
         for (int i = 0; i < players; i++) {
-            int x = i + 1;
-            playerMap.put(x, new Player());
+            int id = i + 1;
+            playerMap.put(id, new Player(id));
         }
         if (playerMap.size() == 2) {
             launchGame();
         }
+    }
+
+    public Player getPlayer(int id){
+        return playerMap.get(id);
     }
 
     private void launchGame() {
@@ -58,4 +67,10 @@ public class MainWindowModel extends Observable {
         KeyManager.setAllowModification(true);
     }
 
+    public void addArrow(SendArrowRequest sendArrowRequest) {
+        int arrowId = sendArrowRequest.getId();
+        this.integerArrowMap.put(arrowId,new Arrow(sendArrowRequest.getPlayerPosition(),arrowId));
+        this.setChanged();
+        this.notifyObservers(this.integerArrowMap.get(arrowId));
+    }
 }
